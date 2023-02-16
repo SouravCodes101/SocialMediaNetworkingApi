@@ -40,21 +40,18 @@ public class UserDao {
   } catch(Exception e) {
     throw e;
   }
-    }
-/* ,List<User> newUser*/
-    public Boolean isExistsMail(String email){
+ }
+  public List<User> getUserByEmail(String email) {
       Object[] obj = new Object[] { email };
       String query = "SELECT * FROM users WHERE email = ?";
       Boolean flag = false;
-      List<User> user = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(User.class), obj);
-      // for(int i=0; i<newUser.size(); i++) {
-
-      //   if(newUser.get(i).getEmail() == user.get(i).getEmail()){
-      //     flag = false;
-      //   } 
-        
-      // }
-        if(user.size() > 0) {
+      List<User> users = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(User.class), obj);
+      return users;
+  } 
+  
+    public Boolean isExistsMail(String email){
+        List<User> users = getUserByEmail(email);
+        if(users.size() > 0) {
           return true;
         } else {
           return false;
@@ -71,11 +68,11 @@ public class UserDao {
 
       param.addValue("firstName", user.getFirstName());
       param.addValue("lastName", user.getLastName());
-      // if(!(isExistsMail(user.getEmail()))) {
+      if(isExistsMail(user.getEmail())) {
+        throw new Exception("Duplicate Email");
+      } else {
         param.addValue("email", user.getEmail());
-      // } else {
-      //   throw new Exception("Duplicate Email");
-      // }
+      }
      
       String pass = encrypt(user.getPassword(), user);
       param.addValue("password", pass);
