@@ -54,20 +54,13 @@ public class LikesDao {
         param.addValue("likeCount", 1);
       }
 
-      //*  if (isExistsPost(like.getPostId())) {
-      //    query = "SELECT post_id, like_count FROM Employee GROUP BY like_count;"
-      //*         if (isExistsMail(like.getUserId())) {
-      //*             param.addValue("likeCount", count - 1);
-      //    throw new Exception("User Id is same!!!!");
-      //*         } else if (!isExistsMail(like.getUserId())){
-      //ToDO ::  Update likes SET likeCount = count WHERE userID is equal to like.getUserId */
-      //*            param.addValue("likeCount", count + 1);
-      //*       }
-      //*   } else {
-      //*       param.addValue("likeCount", 1);
-      //*  }
-
+      //*   if (isExistsPost(like.getPostId())) {
+      //   query = "Select * from posts LEFT join (SELECT post_id, count(like_count) as cnt FROM likes GROUP BY post_id) as likeData on posts.post_id = likeData.post_id";
+      Object[] obj = new Object[] { like.getPostId(), like.getUserId() };
+      query = "select * from likes where post_id = ? and user_id = ?";
+      List<Likes> likes = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Likes.class) ,obj);
       // * ------------------- */
+
       param.addValue("userId", like.getUserId());
       param.addValue("postId", like.getPostId());
 
