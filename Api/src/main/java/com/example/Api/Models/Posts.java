@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -14,6 +15,7 @@ import java.util.Date;
 public class Posts {
   private int postId;
   private String content;
+  private List<String> fileUrls;
   private Date createdOn;
   private int createdBy;
   private Date updatedOn;
