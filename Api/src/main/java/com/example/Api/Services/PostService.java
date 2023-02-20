@@ -31,4 +31,13 @@ public class PostService {
       throw e;
     }
   }
+
+  public List<Posts> sharePost(int postID) throws Exception {
+    try {
+      return postsDao.sharePost(postID);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
 }

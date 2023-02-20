@@ -24,11 +24,12 @@ public class LikesDao {
 
   public Likes likePost(Likes like) throws Exception{
     try {
+      KeyHolder holder = new GeneratedKeyHolder();
       if(isPostAndUserExists(like)){
         delete(like,like.getPostId());
       } else {
         String query = "INSERT into likes(user_id,post_id,like_count) VALUES (:userId,:postId,:likeCount)";
-        KeyHolder holder = new GeneratedKeyHolder();
+         holder = new GeneratedKeyHolder();
         MapSqlParameterSource param = new MapSqlParameterSource();
         param.addValue("userId", like.getUserId());
         param.addValue("postId",  like.getPostId());
@@ -43,14 +44,23 @@ public class LikesDao {
     }
   }
 
+  // public List<Likes> likeCount() throws Exception {
+  //   try {
+  //     String query = "SELECT COUNT(post_id) FROM likes JOIN posts ON likes.post_id = posts.post_id";
+  //   } catch (Exception e) {
+  //     e.printStackTrace();
+  //     throw e;
+  //   }
+  // }
+
   public void delete(Likes like,int postId) {
     String query = "DELETE FROM Likes WHERE post_id = :postId AND user_id = :userId";
-    MapSqlParameterSource namedParameters = new MapSqlParameterSource("postId", Integer.valueOf(like.getPostId()));
+    MapSqlParameterSource namedParameters = new MapSqlParameterSource("postId", like.getPostId());
     namedParameters.addValue("userId", like.getUserId());
     namedParameterJdbcTemplate.update(query, namedParameters);
   }
 
-    public List<Likes> getLikes() throws Exception {
+  public List<Likes> getLikes() throws Exception {
       try {
         Object[] obj = new Object[] {};
         String query = "SELECT * FROM likes";
@@ -68,6 +78,7 @@ public class LikesDao {
         if(likes.size() > 0) {
           return true;
        } else {
-          return false;     }
+          return false;    
+      }
     }
 }
