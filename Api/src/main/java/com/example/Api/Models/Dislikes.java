@@ -9,9 +9,9 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Likes {
+public class Dislikes {
   private int id;
   private String userId;
   private int postId;
-  private int likeCount;
+  private int dislikeCount;
 }

@@ -7,42 +7,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.Api.Services.LikeService;
-import com.example.Api.Models.Likes;
+
+import com.example.Api.Services.DislikeService;
+import com.example.Api.Models.Dislikes;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/likes")
-public class LikeController {
+@RequestMapping("/dislikes")
+public class DislikeController {
   
   @Autowired
-  private LikeService likeService;
+  private DislikeService dislikeService;
 
-  @PostMapping("/likePost")
-  public Likes likePost(@RequestBody Likes like) throws Exception {
+  @PostMapping("/dislikePost")
+  public Dislikes dislikePost(@RequestBody Dislikes dislike) throws Exception {
     try {
-      return likeService.likePost(like);
+      return dislikeService.dislikePost(dislike);
     } catch (Exception e) {
       e.printStackTrace();
       throw e;
     }
   }
 
-  @GetMapping("/getLikes")
-  public List<Likes> getLikes() throws Exception {
+  @GetMapping("/getDislikes")
+  public List<Dislikes> getDislikes() throws Exception {
     try {
-      return likeService.getLikes();
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw e;
-    }
-  }
-
-  @GetMapping("/likesCount")
-  public List<Likes> likesCount() throws Exception {
-    try {
-      return likeService.numberOfLikes();
+      return dislikeService.getDislikes();
     } catch (Exception e) {
       e.printStackTrace();
       throw e;

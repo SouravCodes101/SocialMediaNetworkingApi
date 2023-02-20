@@ -14,13 +14,11 @@ import com.example.Api.Services.PostService;
 import com.example.Api.Dao.PostsDao;
 import com.example.Api.Dao.UserDao;
 
-import jakarta.websocket.server.PathParam;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/post")
-public class postController {
+public class PostController {
   
   @Autowired
   private PostService postService;
@@ -28,12 +26,12 @@ public class postController {
   @Autowired
   private PostsDao postDao;
 
-  @Autowired UserDao userDao;
+  @Autowired 
+  private UserDao userDao;
 
   @PostMapping("/addPost")
   public Posts addPost (@RequestBody Posts post)throws Exception {
     try {
-      
       // return newUser.stream().filter(userObj -> (userObj.getEmail().equals(email)) && (userObj.getPassword().equals(pass))).collect(Collectors.toList());
       return postService.addPost(post);
     } catch(Exception e) {
@@ -58,6 +56,16 @@ public class postController {
     try {
       return postService.getPosts();
     } catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
+  @GetMapping("/sharePost")
+  public List<Posts> sharePost(@RequestParam(value = "postId") int postId) throws Exception {
+    try {
+      return postService.sharePost(postId);
+    } catch (Exception e) {
       e.printStackTrace();
       throw e;
     }

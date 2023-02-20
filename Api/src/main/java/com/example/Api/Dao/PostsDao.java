@@ -78,4 +78,29 @@ public class PostsDao {
     }
   }
 
+  // public String sharePost(Posts post) throws Exception {
+  //   try {
+  //     return getPostUrl(post);
+  //   } catch (Exception e) {
+  //     e.printStackTrace();
+  //     throw e;
+  //   }
+  // }
+
+  public List<Posts> sharePost(int postId) {
+    Object[] obj = new Object[] { postId };
+    String query = "SELECT * FROM posts WHERE post_id= ?";
+    List<Posts> post = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Posts.class), obj);
+    return post;
+} 
+
+  public Boolean isExistsMail(String email){
+      List<User> users = getUserByEmail(email);
+      if(users.size() > 0) {
+        return true;
+      } else {
+        return false;
+      }
+  }
+
 }

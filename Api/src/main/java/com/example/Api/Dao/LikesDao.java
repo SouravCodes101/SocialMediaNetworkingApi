@@ -10,134 +10,83 @@ import org.springframework.stereotype.Component;
 import org.springframework.jdbc.support.KeyHolder;
 
 import com.example.Api.Models.Likes;
-import com.example.Api.Models.User;
 
 import java.util.List;
-import java.util.ArrayList;
 
 @Component
 public class LikesDao {
-
-  // ToDo : 1. If user A hits like to post A, then count of post A should be
-  // increased to 1.
-  // ToDo: 2. If user B also hits like to post A then count of post A should be
-  // increased from 1 to 2.
-  // toDo: (means total like count of Post A is 2 now)
-  // ToDo: 3. If user A again hits like button then it will be counted as dislike
-  // and count should get decreased from 2 to 1.
-  // toDo: (Now current count should be 1 again for post A).
+  
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
   @Autowired
   private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-  @Autowired
-  private JdbcTemplate jdbcTemplate;
-
-  public Likes likePost(Likes like) throws Exception {
+  //* Like a Post */
+  public Likes likePost(Likes like) throws Exception{
     try {
-      // String query = "INSERT into likes(user_id,like_count,post_id)
-      // VALUES(:userId,:likeCount,:postId)";
-
-      String query = "INSERT into likes(user_id,like_count,post_id) VALUES(:userId,:likeCount,:postId)";
-
       KeyHolder holder = new GeneratedKeyHolder();
-
-      MapSqlParameterSource param = new MapSqlParameterSource();
-
-      //ToDo: does not work because new column is created for every post
-      // *Likes On Same Post*/
-      int count = LikeCount(like.getPostId());
-      
-      if(isExistsPost(like.getPostId())){
-        param.addValue("likeCount", count + 1);
+      if(isPostAndUserExists(like)){
+        delete(like,like.getPostId());
       } else {
+        String query = "INSERT into likes(user_id,post_id,like_count) VALUES (:userId,:postId,:likeCount)";
+         holder = new GeneratedKeyHolder();
+        MapSqlParameterSource param = new MapSqlParameterSource();
+        param.addValue("userId", like.getUserId());
+        param.addValue("postId",  like.getPostId());
         param.addValue("likeCount", 1);
+        namedParameterJdbcTemplate.update(query, param, holder);
+        like.setId(holder.getKey().intValue());
       }
-
-      //*   if (isExistsPost(like.getPostId())) {
-      //   query = "Select * from posts LEFT join (SELECT post_id, count(like_count) as cnt FROM likes GROUP BY post_id) as likeData on posts.post_id = likeData.post_id";
-      Object[] obj = new Object[] { like.getPostId(), like.getUserId() };
-      query = "select * from likes where post_id = ? and user_id = ?";
-      List<Likes> likes = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Likes.class) ,obj);
-      // * ------------------- */
-
-      param.addValue("userId", like.getUserId());
-      param.addValue("postId", like.getPostId());
-
-      namedParameterJdbcTemplate.update(query, param, holder);
-
-      like.setId(holder.getKey().intValue());
-
-      return like;
+        return like;
     } catch (Exception e) {
       e.printStackTrace();
       throw e;
     }
   }
 
-  // public Likes dislike(Likes dislike) throws Exception {
-  // try {
-  // String query = "UPDATE likes SET like_count = ?";
-
-  // return dislike;
-  // } catch (Exception e) {
-  // e.printStackTrace();
-  // throw e;
-  // }
-  // }
-
-  public List<Likes> getPost(int postId) {
-    Object[] obj = new Object[] { postId };
-    String query = "SELECT * FROM likes WHERE post_id = ?";
-    List<Likes> isPost = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Likes.class), obj);
-    return isPost;
+  //* Method to delete a like*/
+  public void delete(Likes like,int postId) {
+    String query = "DELETE FROM likes WHERE post_id = :postId AND user_id = :userId";
+    MapSqlParameterSource namedParameters = new MapSqlParameterSource("postId", like.getPostId());
+    namedParameters.addValue("userId", like.getUserId());
+    namedParameterJdbcTemplate.update(query, namedParameters);
   }
 
-  public Boolean isExistsPost(int postId) {
-    List<Likes> like = getPost(postId);
-    if (like.size() > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public int LikeCount(int postId) {
-    Object[] obj = new Object[] { postId };
-    String query = "SELECT like_count FROM likes WHERE post_id = ?";
-    List<Likes> isPost = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Likes.class), obj);
-    int count = 0;
-    for (int i = 0; i < isPost.size(); i++) {
-      count = isPost.get(i).getLikeCount();
-    }
-    return count;
-  }
-
-  // ToDo: get the user
-  public List<Likes> getUserByEmail(String email) {
-    Object[] obj = new Object[] { email };
-    String query = "SELECT * FROM likes WHERE user_id = ?";
-    List<Likes> users = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Likes.class), obj);
-    return users;
-  }
-
-  public Boolean isExistsMail(String email) {
-    List<Likes> users = getUserByEmail(email);
-    if (users.size() > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
+  //*Get the likes on posts */
   public List<Likes> getLikes() throws Exception {
-    try {
-      Object[] obj = new Object[] {};
-      String query = "SELECT * FROM likes";
-      List<Likes> like = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Likes.class), obj);
-      return like;
-    } catch (Exception e) {
-      throw e;
+      try {
+        Object[] obj = new Object[] {};
+        String query = "SELECT * FROM likes";
+        List<Likes> likes = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Likes.class), obj);
+        return likes;
+      } catch (Exception e) {
+        throw e;
+      }
     }
-  }
+
+    //*Count Number of Likes */
+    public List<Likes> numberOfLikes() throws Exception {
+      try {
+        Object[] newObj = new Object[] {};
+        String query = "SELECT post_id,COUNT(post_id) FROM likes GROUP BY post_id";
+        List<Likes> count = jdbcTemplate.query(query,BeanPropertyRowMapper.newInstance(Likes.class),newObj);
+        return count;
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw e;
+      }
+    }
+    
+    //* Method to check if post_id and user_id already exists in likes db */
+    public boolean isPostAndUserExists(Likes like) {
+      Object[] obj = new Object[] { like.getPostId(), like.getUserId() };
+        String query = "select * from likes where post_id = ? and user_id = ?";
+        List<Likes> likes = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Likes.class) ,obj);
+        if(likes.size() > 0) {
+          return true;
+       } else {
+          return false;    
+      }
+    }
 }
