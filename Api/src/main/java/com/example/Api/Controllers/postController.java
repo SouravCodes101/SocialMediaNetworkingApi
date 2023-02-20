@@ -14,6 +14,8 @@ import com.example.Api.Services.PostService;
 import com.example.Api.Dao.PostsDao;
 import com.example.Api.Dao.UserDao;
 
+import jakarta.websocket.server.PathParam;
+
 import java.util.List;
 
 @RestController
