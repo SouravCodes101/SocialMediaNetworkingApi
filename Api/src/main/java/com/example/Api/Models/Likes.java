@@ -12,6 +12,6 @@ import lombok.Setter;
 public class Likes {
   private int id;
   private String userId;
-  private int likeCount;
   private int postId;
+  private int likeCount;
 }

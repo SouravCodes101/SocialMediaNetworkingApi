@@ -1,16 +1,16 @@
 package com.example.Api.Controllers;
 
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.Api.Models.Likes;
 import com.example.Api.Services.LikeService;
+import com.example.Api.Models.Likes;
+
 import java.util.List;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/likes")
@@ -22,9 +22,6 @@ public class LikeController {
   @PostMapping("/likePost")
   public Likes likePost(@RequestBody Likes like) throws Exception {
     try {
-      // validateLikes(like);
-      // List<Likes> likes = new ArrayList<Likes>();
-      // likes.stream().filter(likeObj -> (likeObj.getPostId().equals(likes)));
       return likeService.likePost(like);
     } catch (Exception e) {
       e.printStackTrace();
@@ -32,21 +29,10 @@ public class LikeController {
     }
   }
 
-  void validateLikes (Likes like) throws Exception {
-    try {
-      // if(like.getUserId()== null || like.getUserId().isEmpty()) {
-      //   throw new Exception("User Id is not present!!!");
-      // }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw e;
-    }
-  }
-
   @GetMapping("/getLikes")
-  public List<Likes> getLikes(Likes like) throws Exception {
+  public List<Likes> getLikes() throws Exception {
     try {
-      return likeService.getLikes(like);
+      return likeService.getLikes();
     } catch (Exception e) {
       e.printStackTrace();
       throw e;
