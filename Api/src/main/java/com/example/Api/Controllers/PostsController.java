@@ -7,33 +7,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-import com.example.Api.Services.DislikeService;
-import com.example.Api.Models.Dislikes;
+import com.example.Api.Models.Posts;
+import com.example.Api.Services.PostService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/dislikes")
-public class DislikeController {
-  
-  @Autowired
-  private DislikeService dislikeService;
+@RequestMapping("/posts")
+public class PostsController {
 
-  @PostMapping("/dislikePost")
-  public Dislikes dislikePost(@RequestBody Dislikes dislike) throws Exception {
+  @Autowired
+  private PostService postService;
+  
+  @PostMapping("/addPost")
+  public Posts addPost(@RequestBody Posts post) throws Exception {
     try {
-      return dislikeService.dislikePost(dislike);
-    } catch (Exception e) {
+      return postService.addPost(post);
+    } catch(Exception e) {
       e.printStackTrace();
       throw e;
     }
-  }
+  } 
 
-  @GetMapping("/getDislikes")
-  public List<Dislikes> getDislikes() throws Exception {
+  @GetMapping("/getPosts")
+  public List<Posts> getPosts() throws Exception {
     try {
-      return dislikeService.getDislikes();
+      return postService.getPosts();
     } catch (Exception e) {
       e.printStackTrace();
       throw e;

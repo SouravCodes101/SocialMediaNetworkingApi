@@ -15,7 +15,7 @@ public class PostService {
   @Autowired
   private PostsDao postsDao;
 
-  public Posts  addPost(Posts post) throws Exception {
+  public Posts addPost(Posts post) throws Exception {
     try{
       return postsDao.addPost(post);
     } catch (Exception e) {
