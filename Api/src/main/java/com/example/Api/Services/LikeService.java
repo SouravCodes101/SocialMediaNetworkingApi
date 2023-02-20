@@ -32,4 +32,13 @@ public class LikeService {
       throw e;
     }
   }
+
+  public List<Likes> numberOfLikes() throws Exception {
+    try {
+      return likesDao.numberOfLikes();
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
 }

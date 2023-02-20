@@ -22,6 +22,7 @@ public class LikesDao {
   @Autowired
   private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+  //* Like a Post */
   public Likes likePost(Likes like) throws Exception{
     try {
       KeyHolder holder = new GeneratedKeyHolder();
@@ -44,22 +45,15 @@ public class LikesDao {
     }
   }
 
-  // public List<Likes> likeCount() throws Exception {
-  //   try {
-  //     String query = "SELECT COUNT(post_id) FROM likes JOIN posts ON likes.post_id = posts.post_id";
-  //   } catch (Exception e) {
-  //     e.printStackTrace();
-  //     throw e;
-  //   }
-  // }
-
+  //* Method to delete a like*/
   public void delete(Likes like,int postId) {
-    String query = "DELETE FROM Likes WHERE post_id = :postId AND user_id = :userId";
+    String query = "DELETE FROM likes WHERE post_id = :postId AND user_id = :userId";
     MapSqlParameterSource namedParameters = new MapSqlParameterSource("postId", like.getPostId());
     namedParameters.addValue("userId", like.getUserId());
     namedParameterJdbcTemplate.update(query, namedParameters);
   }
 
+  //*Get the likes on posts */
   public List<Likes> getLikes() throws Exception {
       try {
         Object[] obj = new Object[] {};
@@ -71,6 +65,20 @@ public class LikesDao {
       }
     }
 
+    //*Count Number of Likes */
+    public List<Likes> numberOfLikes() throws Exception {
+      try {
+        Object[] newObj = new Object[] {};
+        String query = "SELECT post_id,COUNT(post_id) FROM likes GROUP BY post_id";
+        List<Likes> count = jdbcTemplate.query(query,BeanPropertyRowMapper.newInstance(Likes.class),newObj);
+        return count;
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw e;
+      }
+    }
+    
+    //* Method to check if post_id and user_id already exists in likes db */
     public boolean isPostAndUserExists(Likes like) {
       Object[] obj = new Object[] { like.getPostId(), like.getUserId() };
         String query = "select * from likes where post_id = ? and user_id = ?";
