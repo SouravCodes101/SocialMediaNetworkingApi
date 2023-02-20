@@ -9,12 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Api.Models.Posts;
-import com.example.Api.Models.User;
 import com.example.Api.Services.PostService;
-import com.example.Api.Dao.PostsDao;
-import com.example.Api.Dao.UserDao;
-
-import jakarta.websocket.server.PathParam;
 
 import java.util.List;
 
@@ -25,16 +20,9 @@ public class PostController {
   @Autowired
   private PostService postService;
 
-  @Autowired
-  private PostsDao postDao;
-
-  @Autowired 
-  private UserDao userDao;
-
   @PostMapping("/addPost")
   public Posts addPost (@RequestBody Posts post)throws Exception {
     try {
-      // return newUser.stream().filter(userObj -> (userObj.getEmail().equals(email)) && (userObj.getPassword().equals(pass))).collect(Collectors.toList());
       return postService.addPost(post);
     } catch(Exception e) {
       e.printStackTrace();
