@@ -52,7 +52,7 @@ public class PostController {
   }
 
   @GetMapping("/sharePost")
-  public List<Posts> sharePost(@RequestParam(value = "postId") int postId) throws Exception {
+  public List<Posts> getPostById(@RequestParam(value = "postId") int postId) throws Exception {
     try {
       return postService.sharePost(postId);
     } catch (Exception e) {

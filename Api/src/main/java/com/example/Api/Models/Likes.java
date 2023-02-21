@@ -13,5 +13,5 @@ public class Likes {
   private int id;
   private String userId;
   private int postId;
-  private int likeCount;
+  private int flag;
 }

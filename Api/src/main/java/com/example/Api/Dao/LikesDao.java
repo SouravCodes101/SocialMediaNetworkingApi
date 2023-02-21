@@ -34,7 +34,7 @@ public class LikesDao {
         MapSqlParameterSource param = new MapSqlParameterSource();
         param.addValue("userId", like.getUserId());
         param.addValue("postId",  like.getPostId());
-        param.addValue("likeCount", 1);
+        param.addValue("likeCount", 1); // set default value in db
         namedParameterJdbcTemplate.update(query, param, holder);
         like.setId(holder.getKey().intValue());
       }
@@ -47,7 +47,7 @@ public class LikesDao {
 
   //* Method to delete a like*/
   public void delete(Likes like,int postId) {
-    String query = "DELETE FROM likes WHERE post_id = :postId AND user_id = :userId";
+    String query = "DELETE FROM likes WHERE post_id = :postId AND user_id = :userId"; 
     MapSqlParameterSource namedParameters = new MapSqlParameterSource("postId", like.getPostId());
     namedParameters.addValue("userId", like.getUserId());
     namedParameterJdbcTemplate.update(query, namedParameters);

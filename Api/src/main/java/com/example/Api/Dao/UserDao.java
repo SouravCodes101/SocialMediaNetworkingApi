@@ -48,6 +48,18 @@ public class UserDao {
       List<User> users = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(User.class), obj);
       return users;
   } 
+
+  public User getUserByEmailAndPassword(String email,String password)throws Exception {
+    
+    Object[] obj = new Object[] { email,password };
+    String query = "SELECT * FROM users WHERE email = ? AND password = ?";
+    List<User> users = jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(User.class), obj);
+    if(users.size()>0) {
+      return users.get(0);
+    }
+    throw new Exception("Enter Correct Email and Password!!!");
+
+}
   
     public Boolean isExistsMail(String email){
         List<User> users = getUserByEmail(email);
